@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -68,10 +67,22 @@ public class CommonTestCase {
                     ApplyPaymentResponse.class
             );
 
-            System.err.println(String.format("Price = %d, vat = %d : 결제 성공", request.getPrice(), request.getVat()));
+            System.err.println(
+                    String.format(
+                            "Price = %d, vat = %d : 결제 성공",
+                            request.getPrice(), request.getVat()
+                    )
+            );
+
             return response;
         } catch (Exception e) {
-            System.err.println(String.format("Price = %d, vat = %d : 결제 실패 (%s)", request.getPrice(), request.getVat(), e.getMessage()));
+            System.err.println(
+                    String.format(
+                            "Price = %d, vat = %d : 결제 실패 (%s)",
+                            request.getPrice(), request.getVat(), e.getMessage()
+                    )
+            );
+
             throw ExceptionUtils.getRootCause(e);
         }
     }
@@ -85,10 +96,22 @@ public class CommonTestCase {
                     CancelPaymentResponse.class
             );
 
-            System.err.println(String.format("Price = %d, vat = %d : 취소 성공", request.getPrice(), request.getVat()));
+            System.err.println(
+                    String.format(
+                            "Price = %d, vat = %d : 취소 성공",
+                            request.getPrice(), request.getVat()
+                    )
+            );
+
             return response;
         } catch (Exception e) {
-            System.err.println(String.format("Price = %d, vat = %d : 취소 실패 (%s)", request.getPrice(), request.getVat(), e.getMessage()));
+            System.err.println(
+                    String.format(
+                            "Price = %d, vat = %d : 취소 실패 (%s)",
+                            request.getPrice(), request.getVat(), e.getMessage()
+                    )
+            );
+
             throw ExceptionUtils.getRootCause(e);
         }
     }
@@ -102,10 +125,25 @@ public class CommonTestCase {
                     SearchPaymentResponse.class
             );
 
-            System.err.println(String.format("조회 성공 : %s", objectMapper.writeValueAsString(response)));
+            if (response instanceof SearchPaymentResponse) {
+                SearchPaymentResponse searchPaymentResponse = (SearchPaymentResponse) response;
+                System.err.println(
+                        String.format(
+                                "Price = %d, vat = %d : 조회 성공",
+                                searchPaymentResponse.getPrice(), searchPaymentResponse.getVat()
+                        )
+                );
+            }
+
             return response;
         } catch (Exception e) {
-            System.err.println(String.format("조회 실패 (%s)", e.getMessage()));
+            System.err.println(
+                    String.format(
+                            "조회 실패 (%s)",
+                            e.getMessage()
+                    )
+            );
+
             throw ExceptionUtils.getRootCause(e);
         }
     }

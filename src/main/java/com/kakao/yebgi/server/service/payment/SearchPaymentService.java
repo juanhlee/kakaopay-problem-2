@@ -3,6 +3,7 @@ package com.kakao.yebgi.server.service.payment;
 import com.kakao.yebgi.server.card.model.CardInfo;
 import com.kakao.yebgi.server.card.model.MaskedCardInfo;
 import com.kakao.yebgi.server.constant.ApiError;
+import com.kakao.yebgi.server.entity.payment.ApplyPayment;
 import com.kakao.yebgi.server.entity.payment.Payment;
 import com.kakao.yebgi.server.exception.ApiException;
 import com.kakao.yebgi.server.repository.PaymentRepository;
@@ -13,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 @Service
@@ -26,6 +28,13 @@ public class SearchPaymentService {
     @Resource
     private PaymentRepository<Payment> paymentRepository;
 
+    private ResponseFactory responseFactory;
+
+    @PostConstruct
+    void init() {
+        responseFactory = new ResponseFactory();
+    }
+
     public SearchPaymentResponse doWork(SearchPaymentRequest request) throws ApiException {
         Payment payment = paymentRepository
                 .findById(request.getId())
@@ -33,13 +42,34 @@ public class SearchPaymentService {
 
         CardInfo cardInfo = cardService.decrypt(payment.getEncryptedCardInfo());
 
-        return SearchPaymentResponse
-                .builder()
-                .id(payment.getId())
-                .cardInfo(modelMapper.map(cardInfo, MaskedCardInfo.class))
-                .paymentType(payment.getType())
-                .price(payment.getPrice())
-                .vat(payment.getVat())
-                .build();
+        if (payment instanceof ApplyPayment) {
+            return responseFactory.ofApplyPayment((ApplyPayment) payment, cardInfo);
+        } else {
+            return responseFactory.ofDefault(payment, cardInfo);
+        }
+    }
+
+    private class ResponseFactory {
+        SearchPaymentResponse ofApplyPayment(ApplyPayment payment, CardInfo cardInfo) {
+            return SearchPaymentResponse
+                    .builder()
+                    .id(payment.getId())
+                    .cardInfo(modelMapper.map(cardInfo, MaskedCardInfo.class))
+                    .paymentType(payment.getType())
+                    .price(payment.getRemainingPrice())
+                    .vat(payment.getRemainingVat())
+                    .build();
+        }
+
+        SearchPaymentResponse ofDefault(Payment payment, CardInfo cardInfo) {
+            return SearchPaymentResponse
+                    .builder()
+                    .id(payment.getId())
+                    .cardInfo(modelMapper.map(cardInfo, MaskedCardInfo.class))
+                    .paymentType(payment.getType())
+                    .price(payment.getPrice())
+                    .vat(payment.getVat())
+                    .build();
+        }
     }
 }
