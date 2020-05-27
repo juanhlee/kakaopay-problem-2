@@ -45,6 +45,8 @@ public class CancelPaymentService {
 
     @Transactional
     public CancelPaymentResponse doWork(CancelPaymentRequest request) throws ApiException {
+        Lock lock = lockPayment(request);
+
         ApplyPayment applyPayment = applyPaymentRepository
                 .findById(request.getPaymentId())
                 .orElseThrow(() -> new ApiException(ApiError.PAYMENT_NOT_FOUND));
@@ -52,8 +54,6 @@ public class CancelPaymentService {
         ValidResult validResult = validate(applyPayment, request);
 
         CardInfo cardInfo = cardService.decrypt(applyPayment.getEncryptedCardInfo());
-
-        Lock lock = lockPayment(applyPayment);
 
         try {
             long requireVat = validResult.getRequireVat();
@@ -94,8 +94,8 @@ public class CancelPaymentService {
         }
     }
 
-    private Lock lockPayment(ApplyPayment applyPayment) throws ApiException {
-        String key = applyPayment.getId();
+    private Lock lockPayment(CancelPaymentRequest request) throws ApiException {
+        String key = request.getPaymentId();
         Lock lock = lockRegistry.obtain(key);
 
         if (lock.tryLock()) {
