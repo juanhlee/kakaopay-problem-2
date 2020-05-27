@@ -10,6 +10,7 @@ import com.kakao.yebgi.server.response.payment.ApplyPaymentResponse;
 import com.kakao.yebgi.server.response.payment.CancelPaymentResponse;
 import com.kakao.yebgi.server.response.payment.SearchPaymentResponse;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -30,13 +31,11 @@ import java.util.Collection;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CommonTestCase {
-    @Autowired
-    private MessageSource messageSource;
-
     @Autowired
     private ObjectMapper objectMapper;
 
