@@ -56,6 +56,13 @@ spring-integration-jdbc, spring-boot-integration은 분산 락을 활용하여, 
 
 
 
+## DB 구성
+
+현재 H2를 사용한 메모리 DB로 설정한 상태입니다.
+jdbc 경로 변경없이 사용할 경우, 재기동을 하면 기존에 저장된 정보는 모두 사라지는 점 유의하시기 바랍니다.
+
+
+
 ## 테이블 구성
 
 ![db_diagram_20200528](db_diagram_20200528.png)
