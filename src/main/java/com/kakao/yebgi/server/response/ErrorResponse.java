@@ -1,7 +1,6 @@
 package com.kakao.yebgi.server.response;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kakao.yebgi.server.constant.ApiError;
 import lombok.Data;
@@ -16,12 +15,12 @@ public class ErrorResponse {
     private String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Object result;
+    private Object details;
 
-    public ErrorResponse(ApiError apiError, String message, Object result) {
+    public ErrorResponse(ApiError apiError, String message, Object details) {
         this.apiError = apiError;
         this.message = message;
-        this.result = result;
+        this.details = details;
     }
 
     @JsonGetter
