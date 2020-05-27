@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'kakaopay-yebgi83'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+// Test
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.*'
+}
+
+// Apache Commons
+dependencies {
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.8.1'
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.3'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
+    compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.3'
+}
+
+// Model Mapper {
+dependencies {
+    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.7'
+}
+
+// H2 Database
+dependencies {
+    compile group: 'com.h2database', name: 'h2', version: '1.4.199'
+}
+
+// Lombok
+dependencies {
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+    compile group: 'org.projectlombok', name: 'lombok', version: lombokVersion
+}
+
+// Spring boot
+dependencies {
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-integration', version: springBootVersion
+}
+
+// Spring Integration JPA
+dependencies {
+    compile group: 'org.springframework.integration', name: 'spring-integration-jdbc', version: springIntegrationJdbcVersion
+}
+
+// Json
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: jacksonVersion
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+}
