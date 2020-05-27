@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'war'
+    id 'org.springframework.boot' version '2.1.4.RELEASE'
 }
 
 group 'kakaopay-yebgi83'
@@ -44,16 +44,16 @@ dependencies {
 
 // Spring boot
 dependencies {
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: springBootVersion
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-integration', version: springBootVersion
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.1.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: '2.1.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-integration', version: '2.1.4.RELEASE'
 }
 
 // Spring Integration JPA
 dependencies {
-    compile group: 'org.springframework.integration', name: 'spring-integration-jdbc', version: springIntegrationJdbcVersion
+    compile group: 'org.springframework.integration', name: 'spring-integration-jdbc', version: '5.1.6.RELEASE'
 }
 
 // Json
