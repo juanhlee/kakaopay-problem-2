@@ -583,9 +583,9 @@ METHOD : POST
     "expiryDate": "카드_유효기간",
     "verificationCode": "카드_CVC"
   },
-  "paymentType": "타입(결제면 PAYMENT, 취소면 CANCEL)",
-  "price": 금액,
-  "vat": 부가가치세
+  "paymentType": "타입(**결제**: PAYMENT, **취소**: CANCEL)",
+  "price": 금액(**타입이 결제라면 취소되고 남은 금액 표시**),
+  "vat": 부가가치세(**타입이 결제라면 취소되고 남은 금액 표시**)
 }
 
 
