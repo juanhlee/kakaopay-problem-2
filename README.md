@@ -265,11 +265,10 @@ PayloadFormatter에서는 숫자, 숫자_0, 숫자_L, 문자인 경우에 대해
 진행 순서는 아래와 같음.
 
 #### 3.1. 요청 받은 카드에 대해서 분산 락을 획득, 동시 접근에 대한 방어 수행<br/>
-→ 분산 락에 사용되는 키는, 요청 받은 카드 정보에 대한 암호화 문자열을 사용.
+ 분산 락에 사용되는 키는, 요청 받은 카드 정보에 대한 암호화 문자열을 사용.
 
 #### 3.2. DB에 저장하기 위한 결제 정보 생성<br/>
-→ id 값은 랜덤으로 생성, 생성 로직을 공통으로 사용하기 위해서 생성 함수를 @Bean으로 만들어서 가져오도록 함.
-
+ id 값은 랜덤으로 생성, 생성 로직을 공통으로 사용하기 위해서 생성 함수를 @Bean으로 만들어서 가져오도록 함.<br/>
 com.kakao.yebgi.server.config.IdConfig 소스 내에 아래와 같이 등록함
 
 ```java
@@ -286,12 +285,12 @@ public class IdConfig {
 ```
 
 #### 3.3. 결제정보 생성시에 Optional 값인 VAT에 대한 실질적인 값을 가져오는 것도 여기에서 담당함.<br/>
-→ getActualVat라는 함수를 통해서, 만약에 입력받은 VAT 값이 있으면 그것을 가져오고 없으면, (금액 / 11) 에 대한 반올림을 가져오도록 함
+ getActualVat라는 함수를 통해서, 만약에 입력받은 VAT 값이 있으면 그것을 가져오고 없으면, (금액 / 11) 에 대한 반올림을 가져오도록 함
 
 #### 3.4. "3.3"에서 가져온 실질적인 VAT 정보와 요청 받은 입력 정보, 그리고 암호화한 카드 정보를 이용하여 DB에 저장, 저장이 완료되면 sendService를 사용하여 전송을 수행.
-전송은 앞에서 말한바와 같이 실질적인 전송은 할 수 없어서,, SEND_PAYLOAD에 저장하는 정도로만 수행<br/>  
+전송은 앞에서 말한바와 같이 실질적인 전송은 할 수 없어서, SEND_PAYLOAD에 저장하는 정도로만 수행<br/>  
 
-#### 3.5 응답을 생성하여 리턴
+#### 3.5. 응답을 생성하여 리턴
 
 
 ### 4. CancelPaymentService
@@ -307,6 +306,7 @@ public class IdConfig {
 
 #### 4.3. 결제 정보와 요청 정보를 함께 사용하여, 알맞은 조건인지에 대한 유효성 검사를 수행, 수행 절차는 아래와 같음.<br/>
 ​	4.3.1 결제 정보와 1:N 관계로 엮여있는 취소 정보 목록에 대한 금액의 합을 구함, 이 값이 요청한 금액보다 적으면 "NOT_ENOUGH_PRICE" 오류 발생<br/>
+
 ​	4.3.2 VAT에 대해서도 취소 정보 목록에 대한 VAT의 합을 구하고, 이 값이 요청한 VAT 값보다 적으면 "NOT_ENOUGH_VAT" 오류 발생<br/>
 
 #### 4.4.  취소 정보 저장, 이 때 취소에 사용되는 vat 값을 유효성 검사를 통해서 찾아낸 vat 값을 사용
@@ -325,7 +325,7 @@ long requireVat = Optional
     .orElse(Math.min(remainingVat, request.getDefaultVat()));
 ```
 
-4.4 응답을 생성하여 리턴
+#### 4.5. 응답을 생성하여 리턴
 
 
 ### 5. SearchPaymentService
@@ -336,8 +336,11 @@ long requireVat = Optional
 진행 순서는 아래와 같음.
 
 #### 5.1. 요청 정보에 있는 ID를 사용하여 결제, 취소 관계없이 저장된 항목을 요청<br/>
+
 #### 5.2. 가져온 항목이 있으면, cardService를 사용하여 가져온 항목에 있는 암호화 데이터를 복호화<br/> 
+
 #### 5.3. 응답을 생성, 생성 시에 사용하는 카드 정보를 "*" 문자로 마스킹된 형태를 지원하는 MaskedCardInfo 클래스를 사용<br/>
+
 #### 5.4. 생성한 응답을 리턴
 
 
@@ -362,7 +365,7 @@ private Lock lockCardInfo(String encryptedCardInfo) throws ApiException {
 ```
 
 #### 2. 해당 기능에 대한 단위 테스트는 com.kakao.yebgi.server.MultiThreadTest에 있는 "같은카드로_동시에_결제테스트"를 통해서 확인 가능
-→  같은 카드로 결제를 시도하는 Worker를 두개 만들어서 동시에 시도하면, 하나만 성공하고 다른 하나는 CARD_LOCKED가 발생함을 확인 할 수 있음
+같은 카드로 결제를 시도하는 Worker를 두개 만들어서 동시에 시도하면, 하나만 성공하고 다른 하나는 CARD_LOCKED가 발생함을 확인 할 수 있음
 
 ### 동일한 결제 ID에서 동시에 취소를 시도하는 부분을 방지
 
@@ -384,7 +387,7 @@ private Lock lockPayment(ApplyPayment applyPayment) throws ApiException {
 ```
 
 #### 2. 해당 기능에 대한 단위 테스트는 com.kakao.yebgi.server.MultiThreadTest에 있는 "동일거래로_동시에_거래취소_테스트"를 통해서 확인 가능
-→  같은 결제 ID로 취소를 시도하는 Worker를 두개 만들어서 동시에 시도하면, 하나만 성공하고 다른 하나는 PAYMENT_LOCKED 가 발생함을 확인 할 수 있음
+같은 결제 ID로 취소를 시도하는 Worker를 두개 만들어서 동시에 시도하면, 하나만 성공하고 다른 하나는 PAYMENT_LOCKED 가 발생함을 확인 할 수 있음
 
 
 
@@ -456,21 +459,21 @@ METHOD : POST<br/>
 **입력 양식>**
 ```json
 {
-  "price": 결제금액,
-  "vat": 부가가치세,
+  "price": [결제금액],
+  "vat": [부가가치세],
   "card": {
-    "number": "카드번호",
-    "expiryDate": "카드유효기간",
-    "verificationCode": "카드CVC"
+    "number": "[카드번호]",
+    "expiryDate": "[카드유효기간]",
+    "verificationCode": "[카드CVC]"
   },
-  "months": 결제개월
+  "months": [결제개월]
 }
 ```
 
 **출력 양식>**
 ```json
 {
-  "id": "생성된 결제 ID"
+  "id": "[생성된 결제 ID]"
 }
 ```
 
@@ -508,16 +511,16 @@ METHOD : POST<br/>
 **입력 양식>**
 ```json
 {
-  "price": 취소금액,
-  "vat": 취소부가가치세,
-  "paymentId": "등록된결제ID"
+  "price": [취소금액],
+  "vat": [취소부가가치세],
+  "paymentId": "[등록된 결제 ID]"
 }
 ```
 
 **출력 양식>**
 ```json
 {
-  "id": "생성된 취소 ID"
+  "id": "[생성된 취소 ID]"
 }
 ```
 
@@ -548,22 +551,22 @@ METHOD : POST<br/>
 **입력 양식>**
 ```json
 {
-  "id": "조회_ID"
+  "id": "[조회 ID]"
 }
 ```
 
 **출력 양식>**
 ```json
 {
-  "id": "조회_ID",
+  "id": "[조회 ID]",
   "cardInfo": {
-    "number": "일부_가려진_카드번호",
-    "expiryDate": "카드_유효기간",
-    "verificationCode": "카드_CVC"
+    "number": "[일부 가려진 카드번호]",
+    "expiryDate": "[카드유효기간]",
+    "verificationCode": "[카드CVC]"
   },
-  "paymentType": "타입(결제: PAYMENT, 취소: CANCEL)",
-  "price": 금액(타입이 결제라면 취소되고 남은 금액 표시),
-  "vat": 부가가치세(타입이 결제라면 취소되고 남은 금액 표시)
+  "paymentType": "[타입(결제: PAYMENT, 취소: CANCEL)]",
+  "price": [금액(타입이 결제라면 취소되고 남은 금액 표시)],
+  "vat": [부가가치세(타입이 결제라면 취소되고 남은 금액 표시)]
 }
 ```
 
