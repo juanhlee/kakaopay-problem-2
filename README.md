@@ -123,7 +123,7 @@ jdbc 경로 변경없이 사용할 경우, 재기동을 하면 기존에 저장�
 카드 정보와 관련된 처리를 담당하는 서비스, 주로 카드 정보를 암호화 하거나, 복호화를 담당
 암호화, 복호화를 위해 범용 클래스인 CipherProvider 및 CardInfoMapper 를 만들고 이 두개를 조합해서 사용함. 각각의 요소에 대한 설명은 아래와 같음.
 
-**제공되는 함수>* * encrypt, decrypt
+**제공되는 함수>** encrypt, decrypt
 
 
 ##### 1.1 CipherProvider
@@ -264,10 +264,10 @@ PayloadFormatter에서는 숫자, 숫자_0, 숫자_L, 문자인 경우에 대해
 결제 API에 대한 실질적인 처리 부분을 담당.<br/>
 진행 순서는 아래와 같음.
 
-3.1. 요청 받은 카드에 대해서 분산 락을 획득, 동시 접근에 대한 방어 수행<br/>
+#### 3.1. 요청 받은 카드에 대해서 분산 락을 획득, 동시 접근에 대한 방어 수행<br/>
 → 분산 락에 사용되는 키는, 요청 받은 카드 정보에 대한 암호화 문자열을 사용.
 
-3.2. DB에 저장하기 위한 결제 정보 생성<br/>
+#### 3.2. DB에 저장하기 위한 결제 정보 생성<br/>
 → id 값은 랜덤으로 생성, 생성 로직을 공통으로 사용하기 위해서 생성 함수를 @Bean으로 만들어서 가져오도록 함.
 
 com.kakao.yebgi.server.config.IdConfig 소스 내에 아래와 같이 등록함
@@ -285,13 +285,13 @@ public class IdConfig {
 }
 ```
 
-3.3. 결제정보 생성시에 Optional 값인 VAT에 대한 실질적인 값을 가져오는 것도 여기에서 담당함.<br/>
+#### 3.3. 결제정보 생성시에 Optional 값인 VAT에 대한 실질적인 값을 가져오는 것도 여기에서 담당함.<br/>
 → getActualVat라는 함수를 통해서, 만약에 입력받은 VAT 값이 있으면 그것을 가져오고 없으면, (금액 / 11) 에 대한 반올림을 가져오도록 함
 
-3.4. "3.3"에서 가져온 실질적인 VAT 정보와 요청 받은 입력 정보, 그리고 암호화한 카드 정보를 이용하여 DB에 저장, 저장이 완료되면 sendService를 사용하여 전송을 수행.
+#### 3.4. "3.3"에서 가져온 실질적인 VAT 정보와 요청 받은 입력 정보, 그리고 암호화한 카드 정보를 이용하여 DB에 저장, 저장이 완료되면 sendService를 사용하여 전송을 수행.
 전송은 앞에서 말한바와 같이 실질적인 전송은 할 수 없어서,, SEND_PAYLOAD에 저장하는 정도로만 수행<br/>  
 
-3.5 응답을 생성하여 리턴
+#### 3.5 응답을 생성하여 리턴
 
 
 ### 4. CancelPaymentService
@@ -301,15 +301,15 @@ public class IdConfig {
 취소 API에 대한 실질적인 처리 부분을 담당.<br/>
 진행 순서는 아래와 같음.
 
-4.1. 요청 정보에 있는 결제 ID를 사용하여 분산 락을 획득, 동시 접근에 대한 방어 수행
+#### 4.1. 요청 정보에 있는 결제 ID를 사용하여 분산 락을 획득, 동시 접근에 대한 방어 수행
 
-4.2. 요청 정보에 있는 결제 ID를 사용하여, DB 에서 결제 정보를 가져옴.
+#### 4.2. 요청 정보에 있는 결제 ID를 사용하여, DB 에서 결제 정보를 가져옴.
 
-4.3. 결제 정보와 요청 정보를 함께 사용하여, 알맞은 조건인지에 대한 유효성 검사를 수행, 수행 절차는 아래와 같음.<br/>
+#### 4.3. 결제 정보와 요청 정보를 함께 사용하여, 알맞은 조건인지에 대한 유효성 검사를 수행, 수행 절차는 아래와 같음.<br/>
 ​	4.3.1 결제 정보와 1:N 관계로 엮여있는 취소 정보 목록에 대한 금액의 합을 구함, 이 값이 요청한 금액보다 적으면 "NOT_ENOUGH_PRICE" 오류 발생<br/>
 ​	4.3.2 VAT에 대해서도 취소 정보 목록에 대한 VAT의 합을 구하고, 이 값이 요청한 VAT 값보다 적으면 "NOT_ENOUGH_VAT" 오류 발생<br/>
 
-4.4.  취소 정보 저장, 이 때 취소에 사용되는 vat 값을 유효성 검사를 통해서 찾아낸 vat 값을 사용
+#### 4.4.  취소 정보 저장, 이 때 취소에 사용되는 vat 값을 유효성 검사를 통해서 찾아낸 vat 값을 사용
 
 아래의 소스는 4.2 항목에서 진행된  유효성 검사에 사용할 파라미터를 계산하는 부분인데, 여기서 requireVat 이 실질적인 취소를 요청해야 할 VAT 금액이 됨.
 
@@ -335,17 +335,17 @@ long requireVat = Optional
 조회 API에 대한 실질적인 처리 부분을 담당.<br/>
 진행 순서는 아래와 같음.
 
-5.1. 요청 정보에 있는 ID를 사용하여 결제, 취소 관계없이 저장된 항목을 요청<br/>
-5.2. 가져온 항목이 있으면, cardService를 사용하여 가져온 항목에 있는 암호화 데이터를 복호화<br/> 
-5.3 응답을 생성, 생성 시에 사용하는 카드 정보를 "*" 문자로 마스킹된 형태를 지원하는 MaskedCardInfo 클래스를 사용<br/>
-5.4 생성한 응답을 리턴
+#### 5.1. 요청 정보에 있는 ID를 사용하여 결제, 취소 관계없이 저장된 항목을 요청<br/>
+#### 5.2. 가져온 항목이 있으면, cardService를 사용하여 가져온 항목에 있는 암호화 데이터를 복호화<br/> 
+#### 5.3. 응답을 생성, 생성 시에 사용하는 카드 정보를 "*" 문자로 마스킹된 형태를 지원하는 MaskedCardInfo 클래스를 사용<br/>
+#### 5.4. 생성한 응답을 리턴
 
 
 ## 방어코드 증명
 
 ### 동일한 카드에서 동시에 결제를 시도하는 부분을 방지
 
-1. com.kakao.yebgi.server.service.payment.ApplyPaymentService 클래스 내부에 있는 lockCardInfo 함수에 의해서 암호화 된 카드 정보를 키로 하여, 분산 락을 생성.
+#### 1. com.kakao.yebgi.server.service.payment.ApplyPaymentService 클래스 내부에 있는 lockCardInfo 함수에 의해서 암호화 된 카드 정보를 키로 하여, 분산 락을 생성.
 만약, 이미 사용 중인 분산 락에 접근이 감지되면 "CARD_LOCKED" 에러를 리턴하도록 함.
 소스는 아래와 같음.
 
@@ -361,12 +361,12 @@ private Lock lockCardInfo(String encryptedCardInfo) throws ApiException {
 }
 ```
 
-2. 해당 기능에 대한 단위 테스트는 com.kakao.yebgi.server.MultiThreadTest에 있는 "같은카드로_동시에_결제테스트"를 통해서 확인 가능
+#### 2. 해당 기능에 대한 단위 테스트는 com.kakao.yebgi.server.MultiThreadTest에 있는 "같은카드로_동시에_결제테스트"를 통해서 확인 가능
 →  같은 카드로 결제를 시도하는 Worker를 두개 만들어서 동시에 시도하면, 하나만 성공하고 다른 하나는 CARD_LOCKED가 발생함을 확인 할 수 있음
 
 ### 동일한 결제 ID에서 동시에 취소를 시도하는 부분을 방지
 
-1. com.kakao.yebgi.server.service.payment.CancelPaymentService 클래스 내부에 있는 lockPayment 함수에 의해서 결제 ID를  키로 하여, 분산 락을 생성.
+#### 1. com.kakao.yebgi.server.service.payment.CancelPaymentService 클래스 내부에 있는 lockPayment 함수에 의해서 결제 ID를  키로 하여, 분산 락을 생성.
 만약, 이미 사용 중인 분산 락에 접근이 감지되면 "PAYMENT_LOCKED" 에러를 리턴하도록 함.
 소스는 아래와 같음.
 
@@ -383,7 +383,7 @@ private Lock lockPayment(ApplyPayment applyPayment) throws ApiException {
 }
 ```
 
-2. 해당 기능에 대한 단위 테스트는 com.kakao.yebgi.server.MultiThreadTest에 있는 "동일거래로_동시에_거래취소_테스트"를 통해서 확인 가능
+#### 2. 해당 기능에 대한 단위 테스트는 com.kakao.yebgi.server.MultiThreadTest에 있는 "동일거래로_동시에_거래취소_테스트"를 통해서 확인 가능
 →  같은 결제 ID로 취소를 시도하는 Worker를 두개 만들어서 동시에 시도하면, 하나만 성공하고 다른 하나는 PAYMENT_LOCKED 가 발생함을 확인 할 수 있음
 
 
@@ -393,7 +393,6 @@ private Lock lockPayment(ApplyPayment applyPayment) throws ApiException {
 단위 테스트는 "src\test\java\com\kakao\yebgi\server" 폴더 아래에 있는 파일들을 실행 
 
 제공되는 단위 테스트 파일은 아래와 같음
-
 - request\payment\ApplyPaymentRequestTest.java : 결제 입력 유효성 테스트
 - request\payment\CancelPaymentRequestTest.java : 취소 입력 유효성 테스트
 - request\payment\SearchPaymentRequestTest.java : 조회 입력 유효성 테스트
@@ -407,7 +406,6 @@ private Lock lockPayment(ApplyPayment applyPayment) throws ApiException {
 
 해당 API는 오류가 발생하면 오류 코드 및 설명을 리턴하도록 되어있음.<br/>
 에러 정보는 com.kakao.yebgi.server.constant.ApiError 내에 저장되어 있으며, 그 목록은 아래와 같음.<br/>
-
 (왼쪽은 Enum 이름, ":" 뒤에 있는 값들이 정보)
 
 **ERROR** : code = 1, description = "오류"<br/>
