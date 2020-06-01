@@ -31,5 +31,5 @@ validation.constraints:
 
   price:
     notNull: 금액을 입력해주세요.
-    pattern: 금액을 {value}원 이상으로 입력해주세요.
-    size: 금액을 {value}원 이하로 입력해주세요.
+    min: 금액을 {value}원 이상으로 입력해주세요.
+    max: 금액을 {value}원 이하로 입력해주세요.

@@ -21,7 +21,6 @@ public class MessageSourceConfig {
         messageSource.setBasename(BASE_NAME);
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setCacheSeconds(60);
-        messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
     }
 
