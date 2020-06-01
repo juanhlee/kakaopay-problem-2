@@ -15,11 +15,11 @@ import java.util.Optional;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@PriceGreaterThanVat(message = "금액을 VAT 보다 더 많은 숫자로 입력해주세요.")
+@PriceGreaterThanVat(message = "{validation.constraints.priceGreaterThanVat}")
 public class PriceRequest {
-    @NotNull(message = "금액을 입력해주세요.")
-    @Min(value = 100, message = "금액을 {value}원 이상으로 입력해주세요.")
-    @Max(value = 1000000000, message = "금액을 {value}원 이하로 입력해주세요.")
+    @NotNull(message = "{validation.constraints.price.notNull}")
+    @Min(value = 100, message = "{validation.constraints.price.min}")
+    @Max(value = 1000000000, message = "{validation.constraints.price.max}")
     private Long price;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -9,7 +9,9 @@ import com.kakao.yebgi.server.response.ErrorResponse;
 import com.kakao.yebgi.server.response.payment.ApplyPaymentResponse;
 import com.kakao.yebgi.server.response.payment.CancelPaymentResponse;
 import com.kakao.yebgi.server.response.payment.SearchPaymentResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.validator.internal.metadata.descriptor.ConstraintDescriptorImpl;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,10 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
+import java.lang.annotation.Annotation;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -45,17 +50,25 @@ public class CommonTestCase {
         return new CardRequest("1234567890", "0120", "123");
     }
 
-    protected <T> Collection<ConstraintViolation<T>> validate(T object) {
+    protected <T> void assertConstraint(T object, Class<? extends Annotation> clazz) {
         Collection<ConstraintViolation<T>> violations = Validation
                 .buildDefaultValidatorFactory()
                 .getValidator()
                 .validate(object);
 
-        for (ConstraintViolation<T> violation : violations) {
-            System.err.println(violation.getMessage());
-        }
+        List<Class> constraints = violations
+                .stream()
+                .map(violation -> (ConstraintDescriptorImpl) violation.getConstraintDescriptor())
+                .map(constraintDescriptor -> constraintDescriptor.getAnnotationType())
+                .collect(Collectors.toList());
 
-        return violations;
+        if (!constraints.contains(clazz)) {
+            assert false : String.format(
+                    "%s is not constraint contained in [%s]",
+                    clazz.getName(),
+                    StringUtils.join(constraints, ", ")
+            );
+        }
     }
 
     protected Object doApply(ApplyPaymentRequest request, ResultMatcher resultMatcher) throws Throwable {

@@ -15,13 +15,13 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ApplyPaymentRequest extends PriceRequest {
-    @NotNull(message = "카드정보를 입력해주세요.")
+    @NotNull(message = "{validation.constraints.cardRequest.notNull}")
     @Valid
     private CardRequest card;
 
-    @NotNull(message = "할부개월을 입력해주세요.")
-    @Min(value = 0, message = "할부개월은 {value} 이상으로 입력해주세요.")
-    @Max(value = 12, message = "할부개월은 {value} 이하로 입력해주세요.")
+    @NotNull(message = "{validation.constraints.paymentMonths.notNull}")
+    @Min(value = 0, message = "{validation.constraints.paymentMonths.min}")
+    @Max(value = 12, message = "{validation.constraints.paymentMonths.max}")
     private Integer months;
 
     @Builder

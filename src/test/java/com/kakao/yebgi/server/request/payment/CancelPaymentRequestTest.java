@@ -1,31 +1,34 @@
 package com.kakao.yebgi.server.request.payment;
 
 import com.kakao.yebgi.server.common.CommonTestCase;
+import com.kakao.yebgi.server.validator.PriceGreaterThanVat;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class CancelPaymentRequestTest extends CommonTestCase {
     @Test
     public void 결제_ID_누락() {
         CancelPaymentRequest request = defaultRequest();
         request.setPaymentId(null);
-        assertEquals(validate(request).size(), 1);
+        assertConstraint(request, NotNull.class);
     }
 
     @Test
     public void 결제_ID_잘못된_길이() {
         CancelPaymentRequest request = defaultRequest();
         request.setPaymentId("abcde");
-        assertEquals(validate(request).size(), 1);
+        assertConstraint(request, Size.class);
     }
 
     @Test
     public void 금액_누락() {
         CancelPaymentRequest request = defaultRequest();
         request.setPrice(null);
-        assertEquals(validate(request).size(), 1);
+        assertConstraint(request, NotNull.class);
     }
 
     @Test
@@ -33,14 +36,14 @@ public class CancelPaymentRequestTest extends CommonTestCase {
         CancelPaymentRequest request = defaultRequest();
         request.setPrice(10L);
         request.setVat(1L);
-        assertEquals(validate(request).size(), 1);
+        assertConstraint(request, Min.class);
     }
 
     @Test
     public void 금액_범위_초과() {
         CancelPaymentRequest request = defaultRequest();
         request.setPrice(5000000000L);
-        assertEquals(validate(request).size(), 1);
+        assertConstraint(request, Max.class);
     }
 
     @Test
@@ -48,7 +51,7 @@ public class CancelPaymentRequestTest extends CommonTestCase {
         CancelPaymentRequest request = defaultRequest();
         request.setPrice(100L);
         request.setVat(10000L);
-        assertEquals(validate(request).size(), 1);
+        assertConstraint(request, PriceGreaterThanVat.class);
     }
 
     private CancelPaymentRequest defaultRequest() {

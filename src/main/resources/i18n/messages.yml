@@ -1,0 +1,35 @@
+validation.constraints:
+  cardRequest:
+    notNull: 카드정보를 입력해주세요.
+
+  paymentMonths:
+    notNull: 할부개월을 입력해주세요.
+    min: 할부개월은 {value} 이상으로 입력해주세요.
+    max: 할부개월은 {value} 이하로 입력해주세요.
+
+  paymentId:
+    notNull: 결제 ID를 입력해주세요.
+    size: 결제 ID를 {max}자리 숫자로 입력해주세요.
+
+  id:
+    notNull: ID를 입력해주세요.
+    size: ID를 {max}자리 숫자로 입력해주세요.
+
+  cardNumber:
+    notNull: 카드번호를 입력해주세요.
+    pattern: 카드번호를 숫자로 입력해주세요.
+    size: 카드번호는 {min} ~ {max}자리 숫자로 입력해야 합니다.
+
+  cardExpiryDate: 카드유효기간은 앞에 2자리는 월, 뒤에는 년도의 마지막 2자리로 입력해야 합니다.
+
+  cvc:
+    notNull: CVC를 입력해주세요.
+    pattern: CVC를 숫자로 입력해주세요.
+    size: CVC를 {max}자리 숫자로 입력해주세요.
+
+  priceGreaterThanVat: 금액을 VAT 보다 더 많은 숫자로 입력해주세요.
+
+  price:
+    notNull: 금액을 입력해주세요.
+    pattern: 금액을 {value}원 이상으로 입력해주세요.
+    size: 금액을 {value}원 이하로 입력해주세요.

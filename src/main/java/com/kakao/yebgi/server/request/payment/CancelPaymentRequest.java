@@ -13,8 +13,8 @@ import javax.validation.constraints.Size;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CancelPaymentRequest extends PriceRequest {
-    @NotNull(message = "결제 ID를 입력해주세요.")
-    @Size(min = Constants.ID_SIZE, max = Constants.ID_SIZE, message = "결제 ID를 {max}자리 숫자로 입력해주세요.")
+    @NotNull(message = "{validation.constraints.paymentId.notNull}")
+    @Size(min = Constants.ID_SIZE, max = Constants.ID_SIZE, message = "{validation.constraints.paymentId.size}")
     private String paymentId;
 
     @Builder

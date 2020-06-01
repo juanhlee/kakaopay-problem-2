@@ -10,8 +10,8 @@ import javax.validation.constraints.Size;
 
 @Data
 public class SearchPaymentRequest {
-    @NotNull(message = "ID를 입력해주세요.")
-    @Size(min = Constants.ID_SIZE, max = Constants.ID_SIZE, message = "ID를 {max}자리 숫자로 입력해주세요.")
+    @NotNull(message = "{validation.constraints.id.notNull}")
+    @Size(min = Constants.ID_SIZE, max = Constants.ID_SIZE, message = "{validation.constraints.id.size}")
     private String id;
 
     @Builder
