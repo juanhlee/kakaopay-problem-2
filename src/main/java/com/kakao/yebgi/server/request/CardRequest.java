@@ -4,13 +4,11 @@ import com.kakao.yebgi.server.card.model.CardInfo;
 import com.kakao.yebgi.server.validator.CardExpiryDate;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Setter
 @NoArgsConstructor
 public class CardRequest extends CardInfo {
     @NotNull(message = "{validation.constraints.cardNumber.notNull}")
