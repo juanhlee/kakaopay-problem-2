@@ -16,17 +16,20 @@ public class ApiParameterException extends ApiException {
         super(ApiError.INVALID_PARAMETER);
         this.fields = result
                 .getAllErrors().stream()
-                .map(error -> new ErrorInfo(error.getObjectName(), error.getDefaultMessage()))
+                .map(error -> new ErrorInfo(error.getCode(), error.getObjectName(), error.getDefaultMessage()))
                 .collect(Collectors.toList());
     }
 
     @Data
     public class ErrorInfo {
+        private String code;
+
         private String field;
 
         private String message;
 
-        ErrorInfo(String field, String message) {
+        ErrorInfo(String code, String field, String message) {
+            this.code = code;
             this.field = field;
             this.message = message;
         }

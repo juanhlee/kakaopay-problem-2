@@ -20,7 +20,9 @@ validation.constraints:
     pattern: 카드번호를 숫자로 입력해주세요.
     size: 카드번호는 {min} ~ {max}자리 숫자로 입력해야 합니다.
 
-  cardExpiryDate: 카드유효기간은 앞에 2자리는 월, 뒤에는 년도의 마지막 2자리로 입력해야 합니다.
+  cardExpiryDate:
+    notNull: 카드유효기간을 입력해주세요.
+    dateFormat: 카드유효기간은 앞에 2자리는 월, 뒤에는 년도의 마지막 2자리로 입력해야 합니다.
 
   cvc:
     notNull: CVC를 입력해주세요.

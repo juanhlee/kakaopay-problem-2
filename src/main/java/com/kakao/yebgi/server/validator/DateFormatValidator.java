@@ -6,9 +6,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
-public class CardExpiryDateValidator implements ConstraintValidator<CardExpiryDate, String> {
+public class DateFormatValidator implements ConstraintValidator<DateFormat, String> {
+    private String format;
+
     @Override
-    public void initialize(CardExpiryDate constraintAnnotation) {
+    public void initialize(DateFormat constraintAnnotation) {
+        this.format = constraintAnnotation.format();
     }
 
     @Override
@@ -17,7 +20,7 @@ public class CardExpiryDateValidator implements ConstraintValidator<CardExpiryDa
             try {
                 return Optional
                         .ofNullable(
-                                new SimpleDateFormat("mmYY")
+                                new SimpleDateFormat(format)
                                         .parse(value)
                         )
                         .map(date -> true)

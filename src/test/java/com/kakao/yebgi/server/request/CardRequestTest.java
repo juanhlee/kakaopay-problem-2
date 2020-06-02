@@ -1,7 +1,7 @@
 package com.kakao.yebgi.server.request;
 
 import com.kakao.yebgi.server.common.CommonTestCase;
-import com.kakao.yebgi.server.validator.CardExpiryDate;
+import com.kakao.yebgi.server.validator.DateFormat;
 import org.junit.Test;
 
 import javax.validation.constraints.NotNull;
@@ -34,14 +34,14 @@ public class CardRequestTest extends CommonTestCase {
     public void 카드_유효기간_누락() {
         CardRequest request = defaultCardRequest();
         request.setExpiryDate(null);
-        assertConstraint(request, CardExpiryDate.class);
+        assertConstraint(request, NotNull.class);
     }
 
     @Test
     public void 카드_유효기간_잘못된_패턴() {
         CardRequest request = defaultCardRequest();
         request.setExpiryDate("abcd");
-        assertConstraint(request, CardExpiryDate.class);
+        assertConstraint(request, DateFormat.class);
     }
 
     @Test

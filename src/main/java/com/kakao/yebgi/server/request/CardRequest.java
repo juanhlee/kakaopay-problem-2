@@ -1,7 +1,7 @@
 package com.kakao.yebgi.server.request;
 
 import com.kakao.yebgi.server.card.model.CardInfo;
-import com.kakao.yebgi.server.validator.CardExpiryDate;
+import com.kakao.yebgi.server.validator.DateFormat;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +19,8 @@ public class CardRequest extends CardInfo {
         return super.getNumber();
     }
 
-    @CardExpiryDate(message = "{validation.constraints.cardExpiryDate}")
+    @NotNull(message = "{validation.constraints.cardExpiryDate.notNull}")
+    @DateFormat(format = "mmYY", message = "{validation.constraints.cardExpiryDate.dateFormat}")
     @Override
     public String getExpiryDate() {
         return super.getExpiryDate();
