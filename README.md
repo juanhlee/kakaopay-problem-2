@@ -51,8 +51,8 @@ spring-integration-jdbc, spring-boot-integration은 분산 락을 활용하여, 
 값 전달의 편의를 위해 사용, Request 객체와 Value 객체와 형식을 비슷하게 만들고 한번에 매핑할 수 있도록 하기 위해 사용. 
 
 * Lombok : 1.18.6<br/>
-개발 편의를 위해 사용, Annotation Processor를 활용한 자동 Getter, Setter 기능 및 Builder 생성 시에 사용
-
+개발 편의를 위해 사용, Annotation Processor를 활용한 자동 Getter, Setter 기능 및 Builder 생성 시에 사용.
+IDE 에서 사용해야 하는 경우에 Project setting 내에 Enable annotation processing 옵션을 켜고 사용 해야 함.
 
 ## DB 구성
 
