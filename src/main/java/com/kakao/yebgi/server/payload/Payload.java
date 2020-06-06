@@ -31,12 +31,12 @@ public class Payload {
     @PayloadField(formatter = PayloadFormatter.NUMBER_0, start = 69, length = 10)
     private Long vat;
 
-    @PayloadField(formatter = PayloadFormatter.STRING, start = 89, length = 20)
+    @PayloadField(formatter = PayloadFormatter.STRING, start = 79, length = 20)
     private String paymentId;
 
-    @PayloadField(formatter = PayloadFormatter.STRING, start = 109, length = 300)
+    @PayloadField(formatter = PayloadFormatter.STRING, start = 99, length = 300)
     private String encryptedCardInfo;
 
-    @PayloadField(formatter = PayloadFormatter.STRING, start = 409, length = 37)
+    @PayloadField(formatter = PayloadFormatter.STRING, start = 399, length = 47)
     private String reserved;
 }
