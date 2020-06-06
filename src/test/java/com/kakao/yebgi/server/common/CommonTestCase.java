@@ -30,6 +30,7 @@ import javax.validation.Validation;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -59,16 +60,14 @@ public class CommonTestCase {
         List<Class> constraints = violations
                 .stream()
                 .map(violation -> (ConstraintDescriptorImpl) violation.getConstraintDescriptor())
-                .map(constraintDescriptor -> constraintDescriptor.getAnnotationType())
+                .map((Function<ConstraintDescriptorImpl, Class>) ConstraintDescriptorImpl::getAnnotationType)
                 .collect(Collectors.toList());
 
-        if (!constraints.contains(clazz)) {
-            assert false : String.format(
-                    "%s is not constraint contained in [%s]",
-                    clazz.getName(),
-                    StringUtils.join(constraints, ", ")
-            );
-        }
+        assert constraints.contains(clazz) : String.format(
+                "%s is not constraint contained in [%s]",
+                clazz.getName(),
+                StringUtils.join(constraints, ", ")
+        );
     }
 
     protected Object doApply(ApplyPaymentRequest request, ResultMatcher resultMatcher) throws Throwable {

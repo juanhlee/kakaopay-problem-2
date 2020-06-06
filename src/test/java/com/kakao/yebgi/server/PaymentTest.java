@@ -22,8 +22,8 @@ public class PaymentTest extends CommonTestCase {
         );
 
         assertNotNull(paymentResponse);
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 11000L, 1000L));
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 11000L, 1000L));
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
     }
 
     @Test
@@ -35,10 +35,10 @@ public class PaymentTest extends CommonTestCase {
 
         assertNotNull(paymentResponse);
 
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 11000L, 1000L));
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 11000L, 1000L));
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
 
-        cancelFailed(
+        assertCancelFailed(
                 new CancelPaymentRequest(paymentResponse.getId(), 1000L, 100L),
                 ApiError.NOT_ENOUGH_PRICE
         );
@@ -53,32 +53,32 @@ public class PaymentTest extends CommonTestCase {
 
         assertNotNull(paymentResponse);
 
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 1100L, 100L));
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 9900L, 900L);
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 1100L, 100L));
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 9900L, 900L);
 
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 3300L, null));
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 6600L, 600L);
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 3300L, null));
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 6600L, 600L);
 
-        cancelFailed(
+        assertCancelFailed(
                 new CancelPaymentRequest(paymentResponse.getId(), 7000L, null),
                 ApiError.NOT_ENOUGH_PRICE
         );
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 6600L, 600L);
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 6600L, 600L);
 
-        cancelFailed(
+        assertCancelFailed(
                 new CancelPaymentRequest(paymentResponse.getId(), 6600L, 700L),
                 ApiError.NOT_ENOUGH_VAT
         );
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 6600L, 600L);
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 6600L, 600L);
 
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 6600L, 600L));
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 6600L, 600L));
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
 
-        cancelFailed(
+        assertCancelFailed(
                 new CancelPaymentRequest(paymentResponse.getId(), 100L, null),
                 ApiError.NOT_ENOUGH_PRICE
         );
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
     }
 
     @Test
@@ -89,19 +89,19 @@ public class PaymentTest extends CommonTestCase {
         );
 
         assertNotNull(paymentResponse);
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 20000L, 909L);
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 20000L, 909L);
 
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 10000L, 0L));
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 10000L, 909L);
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 10000L, 0L));
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 10000L, 909L);
 
-        cancelFailed(
+        assertCancelFailed(
                 new CancelPaymentRequest(paymentResponse.getId(), 10000L, 0L),
                 ApiError.VAT_GREATER_THAN_PRICE
         );
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 10000L, 909L);
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 10000L, 909L);
 
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 10000L, 909L));
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 10000L, 909L));
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 0L, 0L);
     }
 
     @Test
@@ -111,19 +111,19 @@ public class PaymentTest extends CommonTestCase {
                 status().isOk()
         );
 
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 20000L, 1818L);
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 20000L, 1818L);
 
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 10000L, 1000L));
-        searchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 10000L, 818L);
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 10000L, 1000L));
+        assertSearchSuccess(new SearchPaymentRequest(paymentResponse.getId()), 10000L, 818L);
 
-        cancelFailed(
+        assertCancelFailed(
                 new CancelPaymentRequest(paymentResponse.getId(), 10000L, 909L),
                 ApiError.NOT_ENOUGH_VAT
         );
-        cancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 10000L, null));
+        assertCancelSuccess(new CancelPaymentRequest(paymentResponse.getId(), 10000L, null));
     }
 
-    private void searchSuccess(SearchPaymentRequest request, Long price, Long vat) throws Throwable {
+    private void assertSearchSuccess(SearchPaymentRequest request, Long price, Long vat) throws Throwable {
         SearchPaymentResponse response = (SearchPaymentResponse) super.doSearch(
                 request,
                 status().isOk()
@@ -133,7 +133,7 @@ public class PaymentTest extends CommonTestCase {
         assertEquals(response.getVat(), vat);
     }
 
-    private void cancelSuccess(CancelPaymentRequest request) throws Throwable {
+    private void assertCancelSuccess(CancelPaymentRequest request) throws Throwable {
         assertNotNull(
                 super.doCancel(
                         request,
@@ -142,7 +142,7 @@ public class PaymentTest extends CommonTestCase {
         );
     }
 
-    private void cancelFailed(CancelPaymentRequest request, ApiError expectedCode) throws Throwable {
+    private void assertCancelFailed(CancelPaymentRequest request, ApiError expectedCode) throws Throwable {
         ErrorResponse result = (ErrorResponse) super.doCancel(
                 request,
                 status().is4xxClientError()
