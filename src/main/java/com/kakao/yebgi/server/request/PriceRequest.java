@@ -28,7 +28,7 @@ public class PriceRequest {
     private Long vat;
 
     @JsonIgnore
-    public Long getDefaultVat() {
+    public long getDefaultVat() {
         if (price != null) {
             return Optional
                     .ofNullable(vat)
