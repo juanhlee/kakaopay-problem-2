@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 @Data
@@ -30,7 +32,12 @@ public class PriceRequest {
         if (price != null) {
             return Optional
                     .ofNullable(vat)
-                    .orElse(Math.round(price / 11.0));
+                    .orElseGet(() ->
+                            BigDecimal
+                                    .valueOf(price)
+                                    .divide(BigDecimal.valueOf(11), RoundingMode.HALF_UP)
+                                    .longValue()
+                    );
         } else {
             return vat;
         }
