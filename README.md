@@ -51,8 +51,8 @@ spring-integration-jdbc, spring-boot-integration은 분산 락을 활용하여, 
 값 전달의 편의를 위해 사용, Request 객체와 Value 객체와 형식을 비슷하게 만들고 한번에 매핑할 수 있도록 하기 위해 사용. 
 
 * Lombok : 1.18.6<br/>
-개발 편의를 위해 사용, Annotation Processor를 활용한 자동 Getter, Setter 기능 및 Builder 생성 시에 사용
-
+개발 편의를 위해 사용, Annotation Processor를 활용한 자동 Getter, Setter 기능 및 Builder 생성 시에 사용.<br/>
+IDE 에서 사용해야 하는 경우에 Project setting 내에 Enable annotation processing 옵션을 켜고 사용 해야 함.
 
 ## DB 구성
 
@@ -593,3 +593,11 @@ METHOD : POST<br/>
   "vat": 1000
 }
 ```
+
+### 기타 
+
+#### 브랜치 구성
+
+해당 프로젝트는 날짜별로 브랜치가 구성되어 있음.<br/>
+사전 과제 당시에 제출했던 브랜치(20200529)와 이후 추가 보완한 브랜치를 따로 구성함.<br/>
+그리고 master 브랜치가 가장 최신 상태를 유지하도록 했음.
